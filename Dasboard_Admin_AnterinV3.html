@@ -1117,6 +1117,87 @@
               </tbody>
             </table>
           </div>
+          
+          <!-- Promo Management -->
+          <div
+            id="promos"
+            class="bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+          >
+            <div
+              class="p-8 border-b bg-rose-50/50 flex justify-between items-center cursor-pointer select-none"
+              onclick="togglePromosTable()"
+            >
+              <div class="flex items-center gap-4">
+                <h3
+                  class="font-black text-slate-800 text-lg uppercase tracking-tight italic text-rose-700"
+                >
+                  Promo & Voucher Management
+                </h3>
+                <span
+                  id="promo-count-badge"
+                  class="bg-rose-100 text-rose-700 text-[10px] font-black px-4 py-1.5 rounded-full uppercase"
+                  >0 Aktif</span
+                >
+              </div>
+              <button
+                class="flex items-center gap-2 bg-rose-600 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-rose-700 transition active:scale-95"
+              >
+                <span id="promos-toggle-label">Tampilkan</span>
+                <i
+                  id="promos-toggle-icon"
+                  class="fas fa-chevron-down text-xs transition-transform duration-300"
+                ></i>
+              </button>
+            </div>
+
+            <div
+              id="promos-table-wrapper"
+              class="hidden overflow-hidden transition-all duration-300"
+            >
+              <div class="p-8 bg-slate-50/30 border-b">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Kode Promo</label>
+                    <input id="promo-code" type="text" placeholder="CONTOH: HEMAT50" class="w-full bg-white border border-slate-200 p-3 rounded-xl text-xs font-black uppercase outline-none focus:border-rose-400 transition" />
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Tipe Potongan</label>
+                    <select id="promo-type" class="w-full bg-white border border-slate-200 p-3 rounded-xl text-xs font-bold outline-none focus:border-rose-400 transition">
+                      <option value="fixed">Nominal Tetap (Rp)</option>
+                      <option value="percentage">Persentase (%)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Nilai Potongan</label>
+                    <input id="promo-value" type="number" placeholder="0" class="w-full bg-white border border-slate-200 p-3 rounded-xl text-xs font-black outline-none focus:border-rose-400 transition" />
+                  </div>
+                  <div class="flex items-end">
+                    <button onclick="window.createPromo()" class="w-full bg-slate-800 text-white font-black py-3 rounded-xl shadow-lg hover:bg-black active:scale-95 transition-all uppercase text-[10px] tracking-widest">
+                      Buat Promo Baru
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-400 uppercase font-black tracking-widest">
+                  <tr>
+                    <th class="px-8 py-4">Kode</th>
+                    <th class="px-8 py-4">Potongan</th>
+                    <th class="px-8 py-4">Status</th>
+                    <th class="px-8 py-4 text-center">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody id="promo-tbody" class="divide-y divide-slate-50">
+                  <!-- Data Promo akan dimuat di sini -->
+                </tbody>
+              </table>
+              <div id="promo-empty" class="hidden py-12 text-center">
+                <i class="fas fa-ticket-alt text-slate-200 text-4xl mb-3 block"></i>
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Belum ada promo aktif</p>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
