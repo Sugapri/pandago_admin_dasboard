@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Premium Admin - Ojol Pro Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <!-- MapLibre GL JS (For MapTiler Vector Styles) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css"
+    />
+    <script src="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.js"></script>
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .bg-gradient-sidebar {
+        background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
+      }
+
+      #map {
+        height: 400px;
+        border-radius: 2rem;
+        overflow: hidden;
+      }
+
+      .custom-shadow {
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #10b981;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+
+  <body class="bg-[#f8fafc] text-slate-800">
+    <div class="flex h-screen overflow-hidden">
+      <aside
+        class="w-72 bg-gradient-sidebar text-white flex-shrink-0 hidden md:flex flex-col shadow-2xl relative z-20"
+      >
+        <div class="p-8 border-b border-white/10">
+          <div class="flex items-center space-x-3">
+            <div class="bg-white p-2 rounded-xl">
+              <i class="fas fa-bolt text-emerald-600 text-xl"></i>
+            </div>
+            <span class="text-xl font-extrabold tracking-tight italic"
+              >OJOL<span class="font-light opacity-80">PRO</span></span
+            >
+          </div>
+        </div>
+
+        <nav class="flex-1 p-6 space-y-4 overflow-y-auto">
+          <p
+            class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-50 px-4"
+          >
+            Menu Utama
+          </p>
+          <a
+            href="#overview"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl bg-white/10 border border-white/20 transition duration-300"
+          >
+            <i class="fas fa-chart-pie text-sm"></i>
+            <span class="font-semibold text-sm">Dashboard</span>
+          </a>
+          <a
+            href="#verifikasi"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-white/5 transition duration-300 opacity-80 hover:opacity-100"
+          >
+            <i class="fas fa-id-card text-sm"></i>
+            <span class="text-sm">Verifikasi Driver</span>
+          </a>
+          <a
+            href="#transaksi"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-white/5 transition duration-300 opacity-80 hover:opacity-100"
+          >
+            <i class="fas fa-route text-sm"></i>
+            <span class="text-sm">Data Transaksi</span>
+          </a>
+          <a
+            href="#wallet"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-white/5 transition duration-300 opacity-80 hover:opacity-100"
+          >
+            <i class="fas fa-wallet text-sm"></i>
+            <span class="text-sm">Dompet & Top-up</span>
+          </a>
+          <a
+            href="#commission"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-white/5 transition duration-300 opacity-80 hover:opacity-100"
+          >
+            <i class="fas fa-file-invoice-dollar text-sm"></i>
+            <span class="text-sm">Penagihan Komisi</span>
+          </a>
+          <a
+            href="#passengers"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-white/5 transition duration-300 opacity-80 hover:opacity-100"
+          >
+            <i class="fas fa-user-friends text-sm"></i>
+            <span class="text-sm">Database Penumpang</span>
+          </a>
+          <a
+            href="#drivers-table"
+            class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-white/5 transition duration-300 opacity-80 hover:opacity-100"
+          >
+            <i class="fas fa-address-book text-sm"></i>
+            <span class="text-sm">Database Driver</span>
+          </a>
+        </nav>
+
+        <div class="p-6">
+          <button
+            class="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center space-x-2"
+          >
+            <i class="fas fa-power-off"></i> <span>Keluar Panel</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 overflow-y-auto bg-gray-50 pb-10">
+        <header
+          class="glass sticky top-0 z-30 px-10 py-5 flex justify-between items-center"
+        >
+          <div>
+            <h2 class="text-2xl font-black text-slate-800 tracking-tight">
+              Master Control
+            </h2>
+            <p
+              class="text-xs text-slate-500 font-bold uppercase tracking-widest"
+            >
+              Aplikasi Ojek Online Real-time
+            </p>
+          </div>
+          <div
+            class="flex items-center space-x-4 bg-white p-1.5 pr-4 rounded-full shadow-sm border border-slate-100"
+          >
+            <img
+              src="https://ui-avatars.com/api/?name=Admin&background=10b981&color=fff"
+              class="w-8 h-8 rounded-full"
+            />
+            <span class="text-sm font-bold text-slate-700">Super Admin</span>
+          </div>
+        </header>
+
+        <div id="overview" class="p-10 space-y-10">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div
+              class="bg-white p-6 rounded-[2rem] custom-shadow border border-slate-100"
+            >
+              <div class="flex justify-between mb-4">
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                  <i class="fas fa-motorcycle"></i>
+                </div>
+                <span class="text-emerald-500 text-xs font-bold">+12%</span>
+              </div>
+              <div
+                class="text-slate-400 text-xs font-bold uppercase tracking-wider"
+              >
+                Driver Online
+              </div>
+              <div
+                id="stat-driver-online"
+                class="text-3xl font-black text-slate-800 mt-1"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-[2rem] custom-shadow border border-slate-100"
+            >
+              <div class="flex justify-between mb-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+                  <i class="fas fa-route"></i>
+                </div>
+                <span class="text-blue-500 text-xs font-bold">LIVE</span>
+              </div>
+              <div
+                class="text-slate-400 text-xs font-bold uppercase tracking-wider"
+              >
+                Order Aktif
+              </div>
+              <div
+                id="stat-order-active"
+                class="text-3xl font-black text-slate-800 mt-1"
+              >
+                0
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-[2rem] custom-shadow border border-slate-100"
+            >
+              <div class="flex justify-between mb-4">
+                <div class="p-3 bg-rose-50 text-rose-600 rounded-2xl">
+                  <i class="fas fa-id-badge"></i>
+                </div>
+                <span class="text-rose-500 text-xs font-bold uppercase"
+                  >Urgent</span
+                >
+              </div>
+              <div
+                class="text-slate-400 text-xs font-bold uppercase tracking-wider"
+              >
+                Verifikasi
+              </div>
+              <div
+                id="stat-pending-verification"
+                class="text-3xl font-black text-slate-800 mt-1"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-slate-900 p-6 rounded-[2rem] shadow-xl">
+              <div class="flex justify-between mb-4">
+                <div class="p-3 bg-emerald-500 text-white rounded-2xl">
+                  <i class="fas fa-wallet"></i>
+                </div>
+              </div>
+              <div
+                class="text-slate-400 text-xs font-bold uppercase tracking-wider"
+              >
+                Revenue (24h)
+              </div>
+              <div
+                id="stat-total-revenue"
+                class="text-2xl font-black text-white mt-1 uppercase italic"
+              >
+                Rp 0
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="bg-white p-2 rounded-[2.5rem] custom-shadow border border-white mb-8"
+          >
+            <div id="map">
+              <div class="text-center">
+                <div
+                  class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg mx-auto mb-3 animate-bounce"
+                >
+                  <i class="fas fa-location-dot text-emerald-500"></i>
+                </div>
+                <p
+                  class="text-xs font-black text-slate-400 tracking-widest uppercase italic"
+                >
+                  Menghubungkan ke Armada...
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Operational Analytics ────────────────────────────────────────── -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 my-8">
+            <div
+              class="lg:col-span-2 bg-white p-8 rounded-[2.5rem] custom-shadow border border-slate-100"
+            >
+              <div class="flex justify-between items-center mb-8">
+                <div>
+                  <h3
+                    class="font-black text-slate-800 text-lg uppercase tracking-tight italic"
+                  >
+                    Revenue Weekly
+                  </h3>
+                  <p class="text-xs text-slate-400 font-bold">
+                    Tren pendapatan komisi 7 hari terakhir
+                  </p>
+                </div>
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+              </div>
+              <div class="h-[300px] w-full">
+                <canvas id="revenueChart"></canvas>
+              </div>
+            </div>
+
+            <div
+              class="bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden"
+            >
+              <div class="relative z-10">
+                <h3
+                  class="font-black text-white text-lg uppercase tracking-tight italic mb-1"
+                >
+                  Service Popularity
+                </h3>
+                <p class="text-xs text-slate-400 font-bold mb-8">
+                  Distribusi penggunaan layanan
+                </p>
+                <div class="h-[250px] w-full flex items-center justify-center">
+                  <canvas id="serviceChart"></canvas>
+                </div>
+              </div>
+              <!-- Decorative element -->
+              <div
+                class="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"
+              ></div>
+            </div>
+          </div>
+
+          <!-- ── Wallet & Financial Management ────────────────────────────────── -->
+          <div id="wallet" class="grid grid-cols-1 lg:grid-cols-3 gap-8 my-8">
+            <!-- Top-up & Withdrawal Queue -->
+            <div
+              class="lg:col-span-2 bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+            >
+              <div
+                class="p-8 border-b bg-slate-50/50 flex justify-between items-center"
+              >
+                <div>
+                  <h3
+                    class="font-black text-slate-800 text-lg uppercase tracking-tight italic"
+                  >
+                    Dompet & Transaksi Keuangan
+                  </h3>
+                  <p class="text-xs text-slate-400 font-bold">
+                    Verifikasi Top-up & Penarikan Saldo
+                  </p>
+                </div>
+                <div class="flex gap-2">
+                  <button
+                    class="bg-emerald-500 text-white text-[10px] font-black px-4 py-2 rounded-xl uppercase shadow-md"
+                  >
+                    Semua Data
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead
+                    class="bg-slate-50/30 text-slate-400 text-[10px] uppercase font-black"
+                  >
+                    <tr>
+                      <th class="px-8 py-4">Driver</th>
+                      <th class="px-8 py-4">Jenis</th>
+                      <th class="px-8 py-4">Nominal</th>
+                      <th class="px-8 py-4">Status</th>
+                      <th class="px-8 py-4 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="wallet-queue-table"
+                    class="divide-y divide-slate-50"
+                  >
+                    <tr class="animate-pulse">
+                      <td
+                        colspan="5"
+                        class="px-8 py-10 text-center text-slate-300 font-bold italic uppercase tracking-widest text-xs"
+                      >
+                        Menghubungkan ke sistem keuangan...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Quick Stats / Manual Adjustment -->
+            <div class="space-y-8">
+              <div
+                class="bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl text-white relative overflow-hidden"
+              >
+                <h4
+                  class="font-black text-sm uppercase tracking-widest mb-6 flex items-center gap-2"
+                >
+                  <i class="fas fa-plus-circle text-emerald-400"></i> Manual
+                  Adjustment
+                </h4>
+                <div class="space-y-4 relative z-10">
+                  <div>
+                    <label
+                      class="text-[9px] font-black text-slate-400 uppercase mb-2 block"
+                      >Cari ID Driver</label
+                    >
+                    <input
+                      type="text"
+                      id="manual-wallet-driver-id"
+                      placeholder="ID Driver (misal: 12)..."
+                      class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:bg-white/10 transition"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="text-[9px] font-black text-slate-400 uppercase mb-2 block"
+                      >Nominal (Rp)</label
+                    >
+                    <input
+                      type="number"
+                      id="manual-wallet-amount"
+                      placeholder="Contoh: 50000"
+                      class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-xs outline-none focus:bg-white/10 transition"
+                    />
+                  </div>
+                  <button
+                    onclick="window.submitManualTopup()"
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-xl shadow-lg transition-all active:scale-95 text-[10px] uppercase tracking-widest"
+                  >
+                    Update Saldo
+                  </button>
+                </div>
+                <div
+                  class="absolute -bottom-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Commission Billing Management ──────────────────────────────── -->
+          <div
+            id="commission"
+            class="grid grid-cols-1 lg:grid-cols-3 gap-8 my-8"
+          >
+            <!-- Verification Queue -->
+            <div
+              class="lg:col-span-2 bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+            >
+              <div
+                class="p-8 border-b bg-amber-50/30 flex justify-between items-center"
+              >
+                <div>
+                  <h3
+                    class="font-black text-slate-800 text-lg uppercase tracking-tight italic text-amber-700"
+                  >
+                    Verifikasi Pembayaran Komisi
+                  </h3>
+                  <p class="text-xs text-slate-400 font-bold">
+                    Driver menyetor hutang komisi melalui transfer
+                  </p>
+                </div>
+                <span
+                  class="bg-amber-100 text-amber-700 text-[10px] font-black px-4 py-2 rounded-xl uppercase"
+                  >Menunggu</span
+                >
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead
+                    class="bg-slate-50/30 text-slate-400 text-[10px] uppercase font-black"
+                  >
+                    <tr>
+                      <th class="px-8 py-4">Driver / Tagihan</th>
+                      <th class="px-8 py-4">Nominal</th>
+                      <th class="px-8 py-4">Bukti TF</th>
+                      <th class="px-8 py-4 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="commission-queue-table"
+                    class="divide-y divide-slate-50"
+                  >
+                    <tr class="animate-pulse">
+                      <td
+                        colspan="4"
+                        class="px-8 py-10 text-center text-slate-300 font-bold italic uppercase tracking-widest text-xs"
+                      >
+                        Mengecek setoran driver...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div
+              class="bg-emerald-600 p-8 rounded-[2.5rem] shadow-2xl text-white relative overflow-hidden"
+            >
+              <div class="relative z-10">
+                <h4
+                  class="font-black text-sm uppercase tracking-widest mb-2 opacity-80"
+                >
+                  Total Piutang Komisi
+                </h4>
+                <p
+                  class="text-4xl font-black mb-4 italic"
+                  id="total-commission-debt"
+                >
+                  Rp 0
+                </p>
+                <div class="h-1 w-20 bg-white/20 rounded-full mb-6"></div>
+                <p class="text-xs font-bold text-emerald-100 leading-relaxed">
+                  Harap verifikasi bukti transfer driver dengan teliti sebelum
+                  menekan tombol setujui. Saldo driver akan otomatis pulih
+                  setelah konfirmasi.
+                </p>
+              </div>
+              <div
+                class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"
+              ></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div
+              class="bg-gradient-to-br from-emerald-600 to-emerald-800 p-8 rounded-[2.5rem] shadow-xl text-white"
+            >
+              <h3 class="font-black text-lg mb-6 flex items-center">
+                <i class="fas fa-bullhorn mr-3"></i> Broadcast Notifikasi
+              </h3>
+
+              <!-- Target Audience Selection -->
+              <div class="mb-4">
+                <label
+                  class="text-[10px] font-black text-emerald-200 uppercase mb-3 block tracking-widest"
+                  >Target Penerima</label
+                >
+                <div class="grid grid-cols-3 gap-2">
+                  <label class="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="broadcast_target"
+                      value="driver"
+                      class="hidden peer"
+                    />
+                    <div
+                      class="text-center py-2 px-1 rounded-xl bg-white/10 border border-white/10 peer-checked:bg-white peer-checked:text-emerald-700 transition-all"
+                    >
+                      <span class="text-[10px] font-black uppercase"
+                        >Driver</span
+                      >
+                    </div>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="broadcast_target"
+                      value="user"
+                      class="hidden peer"
+                    />
+                    <div
+                      class="text-center py-2 px-1 rounded-xl bg-white/10 border border-white/10 peer-checked:bg-white peer-checked:text-emerald-700 transition-all"
+                    >
+                      <span class="text-[10px] font-black uppercase">User</span>
+                    </div>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="broadcast_target"
+                      value="both"
+                      class="hidden peer"
+                      checked
+                    />
+                    <div
+                      class="text-center py-2 px-1 rounded-xl bg-white/10 border border-white/10 peer-checked:bg-white peer-checked:text-emerald-700 transition-all"
+                    >
+                      <span class="text-[10px] font-black uppercase"
+                        >Semua</span
+                      >
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <input
+                  id="broadcast-title"
+                  type="text"
+                  placeholder="Judul Pengumuman"
+                  class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl text-sm outline-none focus:bg-white/20 transition placeholder:text-white/40 font-bold"
+                />
+                <textarea
+                  id="broadcast-message"
+                  placeholder="Tulis pesan ke semua driver/user..."
+                  class="w-full bg-white/10 border border-white/20 p-4 rounded-2xl h-24 text-sm outline-none focus:bg-white/20 transition resize-none placeholder:text-white/40 font-bold"
+                ></textarea>
+                <button
+                  id="broadcast-submit-btn"
+                  onclick="window.submitBroadcast()"
+                  class="w-full bg-white text-emerald-800 font-black py-4 rounded-2xl shadow-xl hover:bg-slate-100 active:scale-95 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                  Kirim Push Notification
+                </button>
+              </div>
+            </div>
+            <div
+              class="bg-white p-8 rounded-[2.5rem] custom-shadow border border-slate-100"
+            >
+              <h3
+                class="font-black text-slate-800 text-lg mb-6 uppercase tracking-tighter italic border-b pb-4 flex justify-between items-center"
+              >
+                <span>Dynamic Pricing & Tax</span>
+                <span
+                  class="text-[10px] bg-slate-100 px-3 py-1 rounded-full text-slate-500 font-bold uppercase"
+                  >Multiservice</span
+                >
+              </h3>
+
+              <!-- Kategori: Motor -->
+              <div class="mb-6">
+                <p
+                  class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-3 flex items-center"
+                >
+                  <i class="fas fa-motorcycle mr-2"></i> Tarif Motor (Ride)
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Dasar</span
+                    >
+                    <input
+                      type="number"
+                      id="motor_base_fare"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Per KM</span
+                    >
+                    <input
+                      type="number"
+                      id="motor_price_per_km"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Minimum</span
+                    >
+                    <input
+                      type="number"
+                      id="motor_min_fare"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Kategori: Mobil -->
+              <div class="mb-6">
+                <p
+                  class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-3 flex items-center"
+                >
+                  <i class="fas fa-car mr-2"></i> Tarif Mobil (Car)
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Dasar</span
+                    >
+                    <input
+                      type="number"
+                      id="car_base_fare"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Per KM</span
+                    >
+                    <input
+                      type="number"
+                      id="car_price_per_km"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Minimum</span
+                    >
+                    <input
+                      type="number"
+                      id="car_min_fare"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Kategori: Layanan -->
+              <div class="mb-6">
+                <p
+                  class="text-[10px] font-bold text-rose-600 uppercase tracking-widest mb-3 flex items-center"
+                >
+                  <i class="fas fa-box mr-2"></i> Layanan (Food, Send, Shop)
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Dasar</span
+                    >
+                    <input
+                      type="number"
+                      id="service_base_fare"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Per KM</span
+                    >
+                    <input
+                      type="number"
+                      id="service_price_per_km"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                  <div
+                    class="p-3 bg-slate-50 rounded-2xl border border-slate-100"
+                  >
+                    <span
+                      class="text-[9px] font-bold text-slate-400 block uppercase"
+                      >Minimum</span
+                    >
+                    <input
+                      type="number"
+                      id="service_min_fare"
+                      class="bg-transparent font-black text-slate-700 outline-none w-full text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-4">
+                  <div
+                    class="flex justify-between items-center p-4 bg-amber-50 rounded-2xl border border-amber-100"
+                  >
+                    <span class="text-[10px] font-bold text-amber-700 uppercase"
+                      >Peak Season (+)</span
+                    >
+                    <div class="flex items-center">
+                      <input
+                        type="number"
+                        id="peak_season_increase"
+                        class="bg-transparent font-black text-amber-600 outline-none w-8 text-right text-xs"
+                      /><span class="text-[10px] font-bold ml-1">%</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex justify-between items-center p-4 bg-blue-50 rounded-2xl border border-blue-100"
+                  >
+                    <span class="text-[10px] font-bold text-blue-700 uppercase"
+                      >Diskon Hari Besar</span
+                    >
+                    <div class="flex items-center">
+                      <span class="text-[10px] font-bold mr-1">Rp</span
+                      ><input
+                        type="number"
+                        id="holiday_discount"
+                        class="bg-transparent font-black text-blue-600 outline-none w-16 text-right text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-4">
+                  <div
+                    class="flex justify-between items-center p-4 bg-rose-50 rounded-2xl border border-rose-100"
+                  >
+                    <span class="text-[10px] font-bold text-rose-700 uppercase"
+                      >Potongan App %</span
+                    >
+                    <div class="flex items-center">
+                      <input
+                        type="number"
+                        id="app_fee_percentage"
+                        class="bg-transparent font-black text-rose-600 outline-none w-8 text-right text-xs"
+                      /><span class="text-[10px] font-bold ml-1">%</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex justify-between items-center p-4 bg-slate-900 rounded-2xl"
+                  >
+                    <span class="text-[10px] font-bold text-slate-400 uppercase"
+                      >Pajak %
+                    </span>
+                    <div class="flex items-center">
+                      <input
+                        type="number"
+                        step="0.1"
+                        id="tax_percentage"
+                        class="bg-transparent font-black text-white outline-none w-8 text-right text-xs"
+                      /><span class="text-[10px] font-bold text-white ml-1"
+                        >%</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onclick="savePricing()"
+                class="w-full bg-slate-800 text-white font-black py-4 mt-6 rounded-2xl shadow-lg hover:bg-black active:scale-95 transition-all uppercase tracking-widest text-xs"
+              >
+                Simpan Semua Perubahan Tarif
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="verifikasi"
+            class="bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+          >
+            <div
+              class="p-8 border-b bg-amber-50/50 flex justify-between items-center cursor-pointer select-none"
+              onclick="toggleVerifikasiTable()"
+            >
+              <div class="flex items-center gap-4">
+                <h3 class="font-black text-slate-800 text-lg uppercase tracking-tight italic text-amber-700">
+                  Antrian Verifikasi Driver
+                </h3>
+                <span id="verifikasi-badge" class="bg-amber-100 text-amber-700 text-[10px] font-black px-4 py-1.5 rounded-full uppercase">Perlu Tindakan</span>
+              </div>
+              <button class="flex items-center gap-2 bg-amber-600 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-amber-700 transition active:scale-95">
+                <span id="verifikasi-toggle-label">Tampilkan</span>
+                <i id="verifikasi-toggle-icon" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+              </button>
+            </div>
+            <div id="verifikasi-table-wrapper" class="hidden overflow-hidden transition-all duration-300">
+            <table class="w-full text-left">
+              <thead
+                class="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black"
+              >
+                <tr>
+                  <th class="px-8 py-4">Identitas</th>
+                  <th class="px-8 py-4">Kendaraan</th>
+                  <th class="px-8 py-4">Status Akun</th>
+                  <th class="px-8 py-4 text-center">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <tr class="hover:bg-slate-50/80 transition">
+                  <td class="px-8 py-6">
+                    <div class="flex items-center space-x-4">
+                      <div
+                        class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 font-black text-xs italic uppercase"
+                      >
+                        JS
+                      </div>
+                      <div>
+                        <p class="font-bold text-slate-800 text-sm">
+                          Joko Susanto
+                        </p>
+                        <p class="text-[10px] text-slate-400">
+                          Daftar: 2 Jam yang lalu
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="px-8 py-6 text-xs font-bold text-slate-500 uppercase tracking-tighter"
+                  >
+                    Honda Vario 160 <br />
+                    <span class="text-slate-300">B 1234 ABC</span>
+                  </td>
+                  <td
+                    class="px-8 py-6 italic text-[10px] font-black text-blue-600"
+                  >
+                    FOTO KTP & SIM TERUPLOAD
+                  </td>
+                  <td class="px-8 py-6">
+                    <div class="flex justify-center space-x-2">
+                      <button
+                        class="bg-emerald-500 text-white w-8 h-8 rounded-lg hover:bg-emerald-600 shadow-md transition"
+                      >
+                        <i class="fas fa-check text-xs"></i>
+                      </button>
+                      <button
+                        class="bg-rose-500 text-white w-8 h-8 rounded-lg hover:bg-rose-600 shadow-md transition"
+                      >
+                        <i class="fas fa-times text-xs"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+          <div
+            id="transaksi"
+            class="bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+          >
+            <div
+              class="p-8 border-b bg-emerald-50/30 flex justify-between items-center cursor-pointer select-none"
+              onclick="toggleOrderTable()"
+            >
+              <div class="flex items-center gap-4">
+                <h3
+                  class="font-black text-slate-800 text-lg uppercase tracking-tight italic"
+                >
+                  Monitoring Order
+                </h3>
+                <span
+                  id="order-count-badge"
+                  class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-3 py-1 rounded-full uppercase"
+                  >0 Order</span
+                >
+              </div>
+              <div class="flex items-center gap-3">
+                <!-- Filter status -->
+                <select
+                  id="order-status-filter"
+                  onclick="event.stopPropagation()"
+                  onchange="filterOrders()"
+                  class="bg-white border border-slate-200 text-slate-600 text-xs font-bold px-3 py-2 rounded-xl outline-none cursor-pointer"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="accepted">Diterima</option>
+                  <option value="picked_up">Dijemput</option>
+                  <option value="on_the_way">Dalam Perjalanan</option>
+                  <option value="completed">Selesai</option>
+                  <option value="cancelled">Dibatalkan</option>
+                </select>
+                <!-- Toggle button -->
+                <button
+                  id="order-toggle-btn"
+                  class="flex items-center gap-2 bg-emerald-600 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-emerald-700 transition active:scale-95"
+                >
+                  <span id="order-toggle-label">Tampilkan</span>
+                  <i
+                    id="order-toggle-icon"
+                    class="fas fa-chevron-down text-xs transition-transform duration-300"
+                  ></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Collapsible table wrapper — hidden by default -->
+            <div
+              id="order-table-wrapper"
+              class="hidden overflow-hidden transition-all duration-300"
+            >
+              <table class="w-full text-left">
+                <thead
+                  class="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black tracking-widest"
+                >
+                  <tr>
+                    <th class="px-8 py-4">Order ID</th>
+                    <th class="px-8 py-4">Detail</th>
+                    <th class="px-8 py-4">Total Biaya</th>
+                    <th class="px-8 py-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="order-tbody"
+                  class="divide-y divide-slate-50 text-xs"
+                >
+                  <!-- Data diisi oleh JS -->
+                </tbody>
+              </table>
+              <!-- Empty state -->
+              <div id="order-empty" class="hidden py-12 text-center">
+                <i class="fas fa-inbox text-slate-200 text-4xl mb-3 block"></i>
+                <p
+                  class="text-slate-400 text-xs font-bold uppercase tracking-widest"
+                >
+                  Tidak ada order ditemukan
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="passengers"
+            class="bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+          >
+            <div
+              class="p-8 border-b bg-slate-900 text-white flex justify-between items-center cursor-pointer select-none"
+              onclick="togglePassengersTable()"
+            >
+              <h3 class="font-black text-lg uppercase tracking-tight italic">
+                Manajemen Penumpang
+              </h3>
+              <div class="flex items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Cari Pelanggan..."
+                  onclick="event.stopPropagation()"
+                  class="bg-white/10 border border-white/20 px-4 py-2 rounded-full text-xs outline-none focus:bg-white/20 transition w-48"
+                />
+                <button class="flex items-center gap-2 bg-white/10 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-white/20 transition active:scale-95 border border-white/10">
+                  <span id="passengers-toggle-label">Tampilkan</span>
+                  <i id="passengers-toggle-icon" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+              </div>
+            </div>
+            <div id="passengers-table-wrapper" class="hidden overflow-hidden transition-all duration-300">
+            <table class="w-full text-left text-xs">
+              <thead
+                class="bg-slate-50 text-slate-400 uppercase font-black tracking-widest"
+              >
+                <tr>
+                  <th class="px-8 py-4 italic">User</th>
+                  <th class="px-8 py-4">Saldo Wallet</th>
+                  <th class="px-8 py-4 text-center">Manajemen</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <tr>
+                  <td class="px-8 py-6">
+                    <div class="flex items-center space-x-3">
+                      <img
+                        src="https://ui-avatars.com/api/?name=Budi"
+                        class="w-8 h-8 rounded-lg"
+                      />
+                      <div>
+                        <p class="font-black text-slate-800">Budi Santoso</p>
+                        <p class="text-[10px] text-slate-400">0812-xxxx-1122</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-8 py-6 font-black text-emerald-600 italic">
+                    Rp 450.000
+                  </td>
+                  <td class="px-8 py-6">
+                    <div class="flex justify-center space-x-2">
+                      <button
+                        class="bg-slate-100 text-slate-400 p-2 rounded-lg hover:bg-rose-500 hover:text-white transition"
+                      >
+                        <i class="fas fa-ban"></i>
+                      </button>
+                      <button
+                        class="bg-slate-100 text-slate-400 p-2 rounded-lg hover:bg-blue-500 hover:text-white transition"
+                      >
+                        <i class="fas fa-wallet"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            id="drivers-table"
+            class="bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+          >
+            <div
+              class="p-8 border-b bg-emerald-900 text-white flex justify-between items-center cursor-pointer select-none"
+              onclick="toggleDriversTable()"
+            >
+              <h3 class="font-black text-lg uppercase tracking-tight italic">
+                Database Driver Terdaftar
+              </h3>
+              <div class="flex items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Cari Driver..."
+                  onclick="event.stopPropagation()"
+                  class="bg-white/10 border border-white/20 px-4 py-2 rounded-full text-xs outline-none focus:bg-white/20 transition w-48"
+                />
+                <button class="flex items-center gap-2 bg-white/10 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-white/20 transition active:scale-95 border border-white/10">
+                  <span id="drivers-toggle-label">Tampilkan</span>
+                  <i id="drivers-toggle-icon" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+              </div>
+            </div>
+            <div id="drivers-table-wrapper" class="hidden overflow-hidden transition-all duration-300">
+            <table class="w-full text-left text-xs">
+              <thead
+                class="bg-slate-50 text-slate-400 uppercase font-black tracking-widest"
+              >
+                <tr>
+                  <th class="px-8 py-4 italic">Driver</th>
+                  <th class="px-8 py-4">Kendaraan</th>
+                  <th class="px-8 py-4">Saldo Wallet</th>
+                  <th class="px-8 py-4">Status Akun</th>
+                  <th class="px-8 py-4 text-center">Tindakan Pelanggaran</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <!-- Data Driver akan dimuat di sini -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ===== SANCTION MODAL ===== -->
+    <div
+      id="sanction-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(6px)"
+    >
+      <div
+        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden"
+      >
+        <div class="bg-slate-900 p-6 flex items-center justify-between">
+          <div>
+            <h3 class="text-white font-black text-lg uppercase tracking-tight">
+              ⚠️ Tindakan Pelanggaran
+            </h3>
+            <p
+              id="sanction-driver-name"
+              class="text-slate-400 text-xs font-bold mt-0.5"
+            ></p>
+          </div>
+          <button
+            onclick="closeSanctionModal()"
+            class="text-slate-400 hover:text-white transition text-xl"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="p-6 space-y-5">
+          <!-- Sanction Type -->
+          <div>
+            <p
+              class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3"
+            >
+              Pilih Jenis Sanksi
+            </p>
+            <div class="grid grid-cols-3 gap-3">
+              <label class="sanction-type-btn cursor-pointer">
+                <input
+                  type="radio"
+                  name="sanction_type"
+                  value="suspended_temp"
+                  class="sr-only"
+                  onchange="onSanctionTypeChange()"
+                />
+                <div
+                  class="p-3 rounded-2xl border-2 border-amber-200 bg-amber-50 text-center transition hover:border-amber-400"
+                >
+                  <i class="fas fa-clock text-amber-500 text-lg mb-1 block"></i>
+                  <p class="text-[10px] font-black text-amber-700 uppercase">
+                    Suspend Sementara
+                  </p>
+                </div>
+              </label>
+              <label class="sanction-type-btn cursor-pointer">
+                <input
+                  type="radio"
+                  name="sanction_type"
+                  value="suspended_perm"
+                  class="sr-only"
+                  onchange="onSanctionTypeChange()"
+                />
+                <div
+                  class="p-3 rounded-2xl border-2 border-rose-200 bg-rose-50 text-center transition hover:border-rose-400"
+                >
+                  <i class="fas fa-ban text-rose-500 text-lg mb-1 block"></i>
+                  <p class="text-[10px] font-black text-rose-700 uppercase">
+                    Suspend Permanen
+                  </p>
+                </div>
+              </label>
+              <label class="sanction-type-btn cursor-pointer">
+                <input
+                  type="radio"
+                  name="sanction_type"
+                  value="terminated"
+                  class="sr-only"
+                  onchange="onSanctionTypeChange()"
+                />
+                <div
+                  class="p-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center transition hover:border-slate-600"
+                >
+                  <i
+                    class="fas fa-user-slash text-slate-600 text-lg mb-1 block"
+                  ></i>
+                  <p class="text-[10px] font-black text-slate-700 uppercase">
+                    Putus Mitra
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+          <!-- Duration (only for suspended_temp) -->
+          <div id="duration-field" class="hidden">
+            <label
+              class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+              >Suspend Hingga Tanggal</label
+            >
+            <input
+              type="date"
+              id="sanction-until"
+              class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-amber-400 transition"
+            />
+          </div>
+          <!-- Reason -->
+          <div>
+            <label
+              class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+              >Alasan Pelanggaran <span class="text-rose-400">*</span></label
+            >
+            <textarea
+              id="sanction-reason"
+              rows="3"
+              placeholder="Tuliskan pelanggaran kode etik yang dilakukan driver..."
+              class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-rose-400 transition resize-none"
+            ></textarea>
+          </div>
+          <!-- Warning -->
+          <div
+            id="sanction-warning"
+            class="hidden p-4 bg-rose-50 border border-rose-200 rounded-2xl"
+          >
+            <p class="text-xs font-black text-rose-700">
+              <i class="fas fa-triangle-exclamation mr-2"></i
+              ><span id="sanction-warning-text"></span>
+            </p>
+          </div>
+        </div>
+        <div class="px-6 pb-6 flex gap-3">
+          <button
+            onclick="closeSanctionModal()"
+            class="flex-1 border border-slate-200 text-slate-500 font-black py-3 rounded-2xl hover:bg-slate-50 transition text-sm uppercase"
+          >
+            Batal
+          </button>
+          <button
+            onclick="submitSanction()"
+            id="sanction-submit-btn"
+            class="flex-1 bg-rose-600 text-white font-black py-3 rounded-2xl hover:bg-rose-700 active:scale-95 transition text-sm uppercase shadow-lg"
+          >
+            Terapkan Sanksi
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- MODULAR ARCHITECTURE (ESM) -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
