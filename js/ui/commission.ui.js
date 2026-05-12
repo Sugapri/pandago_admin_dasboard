@@ -30,10 +30,15 @@ function renderCommissionQueue(bills) {
 
   tbody.innerHTML = bills.map((b) => {
     const proofLink = b.proof_url 
-      ? `<a href="${b.proof_url}" target="_blank" class="text-emerald-600 font-black text-[10px] uppercase hover:underline flex items-center gap-1">
-           <i class="fas fa-image"></i> Lihat Bukti
-         </a>`
-      : `<span class="text-slate-300 font-black text-[10px] uppercase">Tanpa Bukti</span>`;
+      ? `<div class="relative group cursor-pointer" onclick="window.open('${b.proof_url}', '_blank')">
+           <img src="${b.proof_url}" class="w-12 h-12 object-cover rounded-xl border-2 border-amber-100 group-hover:border-amber-400 transition-all shadow-sm" />
+           <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 rounded-xl flex items-center justify-center transition-opacity">
+             <i class="fas fa-search-plus text-white text-[10px]"></i>
+           </div>
+         </div>`
+      : `<div class="w-12 h-12 bg-slate-50 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-100 text-[8px] font-black text-slate-300 uppercase">
+           <i class="fas fa-image-slash mb-0.5"></i> No File
+         </div>`;
 
     return `
       <tr class="hover:bg-slate-50/80 transition">
