@@ -1442,6 +1442,91 @@
               </div>
             </div>
           </div>
+          <!-- Enterprise Big Data Analytics -->
+          <div
+            id="big-data"
+            class="bg-white rounded-[2.5rem] custom-shadow overflow-hidden border border-slate-100"
+          >
+            <div
+              class="p-8 border-b bg-slate-50/30 flex justify-between items-center cursor-pointer select-none"
+              onclick="toggleBigDataTable()"
+            >
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-slate-200">
+                  <i class="fas fa-chart-line text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="font-black text-slate-800 text-lg uppercase tracking-tight italic">
+                    Enterprise Big Data Insights
+                  </h3>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase italic">Real-time Advanced Processing</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                class="flex items-center gap-2 bg-slate-800 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-black transition active:scale-95"
+              >
+                <span id="big-data-toggle-label">Tampilkan</span>
+                <i
+                  id="big-data-toggle-icon"
+                  class="fas fa-chevron-down text-xs transition-transform duration-300"
+                ></i>
+              </button>
+            </div>
+
+            <div id="big-data-wrapper" class="hidden overflow-hidden transition-all duration-300">
+              <div class="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Revenue Trajectory -->
+                <div class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 h-[350px] flex flex-col">
+                  <div class="flex justify-between items-center mb-6">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Growth Trajectory (6 Months)</p>
+                    <select class="bg-white border border-slate-200 text-[10px] font-black p-1.5 rounded-lg outline-none">
+                      <option>Revenue</option>
+                      <option>Users</option>
+                      <option>Drivers</option>
+                    </select>
+                  </div>
+                  <div class="flex-1">
+                    <canvas id="growthChart"></canvas>
+                  </div>
+                </div>
+
+                <!-- Service Distribution -->
+                <div class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 h-[350px] flex flex-col">
+                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Market Share & Distribution</p>
+                  <div class="flex-1">
+                    <canvas id="distributionChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metrics Grid -->
+              <div class="px-8 pb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                  <p class="text-[9px] font-bold text-slate-400 uppercase">Avg. Ticket Size</p>
+                  <p class="text-lg font-black text-slate-800 italic">Rp 42,500</p>
+                  <p class="text-[9px] text-emerald-500 font-bold mt-1"><i class="fas fa-caret-up mr-1"></i> 12% vs Last Month</p>
+                </div>
+                <div class="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                  <p class="text-[9px] font-bold text-slate-400 uppercase">Churn Rate</p>
+                  <p class="text-lg font-black text-rose-600 italic">2.4%</p>
+                  <p class="text-[9px] text-emerald-500 font-bold mt-1"><i class="fas fa-caret-down mr-1"></i> -0.5% vs Last Month</p>
+                </div>
+                <div class="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                  <p class="text-[9px] font-bold text-slate-400 uppercase">Driver Retention</p>
+                  <p class="text-lg font-black text-blue-600 italic">96.8%</p>
+                  <p class="text-[9px] text-slate-400 font-bold mt-1">High Stability</p>
+                </div>
+                <div class="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                  <p class="text-[9px] font-bold text-slate-400 uppercase">ROI (Marketing)</p>
+                  <p class="text-lg font-black text-amber-600 italic">x3.8</p>
+                  <p class="text-[9px] text-amber-500 font-bold mt-1">Positive ROI</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
