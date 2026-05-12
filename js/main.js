@@ -16,6 +16,7 @@ import { loadWalletData } from "./ui/wallet.ui.js";
 import { loadCommissionData } from "./ui/commission.ui.js";
 import { loadPromosData } from "./ui/promos.ui.js";
 import { loadRolesData } from "./ui/roles.ui.js";
+import { initDispatchUi } from "./ui/dispatch.ui.js";
 import "./ui/notifications.ui.js";
 
 // ── Initialization ───────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadPassengersData();
   loadPromosData();
   loadRolesData();
+  initDispatchUi();
 
   // Setup Intervals
   setInterval(updateDashboardStats, POLL_INTERVALS.stats);
