@@ -9,20 +9,33 @@ export async function loadFraudData() {
   try {
     const alerts = await fetchFraudAlertsApi();
     renderFraudAlerts(alerts);
-    
+
     const badge = document.getElementById("fraud-count-badge");
     if (badge) {
       badge.textContent = `${alerts.length} Alerts`;
-      badge.className = alerts.length > 0 
-        ? "bg-rose-100 text-rose-700 text-[10px] font-black px-3 py-1 rounded-full uppercase animate-pulse"
-        : "bg-emerald-100 text-emerald-700 text-[10px] font-black px-3 py-1 rounded-full uppercase";
+      badge.className =
+        alerts.length > 0
+          ? "bg-rose-100 text-rose-700 text-[10px] font-black px-3 py-1 rounded-full uppercase animate-pulse"
+          : "bg-emerald-100 text-emerald-700 text-[10px] font-black px-3 py-1 rounded-full uppercase";
     }
   } catch (e) {
     console.error("Fraud Error:", e);
     // Simulation for demo
     renderFraudAlerts([
-      { id: 1, time: "14:20", subject: "Driver @andi_jkt", type: "Mock GPS Detected", risk: "high" },
-      { id: 2, time: "14:35", subject: "User @budi_s", type: "Order Manipulation", risk: "medium" }
+      {
+        id: 1,
+        time: "14:20",
+        subject: "Driver @andi_jkt",
+        type: "Mock GPS Detected",
+        risk: "high",
+      },
+      {
+        id: 2,
+        time: "14:35",
+        subject: "User @budi_s",
+        type: "Order Manipulation",
+        risk: "medium",
+      },
     ]);
   }
 }
@@ -39,12 +52,16 @@ function renderFraudAlerts(alerts) {
   }
   empty?.classList.add("hidden");
 
-  tbody.innerHTML = alerts.map(a => {
-    const riskClass = a.risk === 'high' ? 'bg-rose-100 text-rose-700' : 
-                      a.risk === 'medium' ? 'bg-amber-100 text-amber-700' : 
-                      'bg-slate-100 text-slate-700';
+  tbody.innerHTML = alerts
+    .map((a) => {
+      const riskClass =
+        a.risk === "high"
+          ? "bg-rose-100 text-rose-700"
+          : a.risk === "medium"
+            ? "bg-amber-100 text-amber-700"
+            : "bg-slate-100 text-slate-700";
 
-    return `
+      return `
       <tr class="hover:bg-slate-50/80 transition">
         <td class="px-8 py-5 text-slate-400 font-bold">${a.time}</td>
         <td class="px-8 py-5 font-black text-slate-800">${a.subject}</td>
@@ -68,7 +85,8 @@ function renderFraudAlerts(alerts) {
         </td>
       </tr>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 window.toggleFraudTable = () => {
