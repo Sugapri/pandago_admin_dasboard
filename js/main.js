@@ -17,6 +17,7 @@ import { loadCommissionData } from "./ui/commission.ui.js";
 import { loadPromosData } from "./ui/promos.ui.js";
 import { loadRolesData } from "./ui/roles.ui.js";
 import { initDispatchUi } from "./ui/dispatch.ui.js";
+import { loadFraudData } from "./ui/fraud.ui.js";
 import "./ui/notifications.ui.js";
 
 // ── Initialization ───────────────────────────────────────────────────────────
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadPromosData();
   loadRolesData();
   initDispatchUi();
+  loadFraudData();
 
   // Setup Intervals
   setInterval(updateDashboardStats, POLL_INTERVALS.stats);
@@ -47,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setInterval(loadCommissionData, POLL_INTERVALS.stats); 
   setInterval(loadPromosData, POLL_INTERVALS.stats); 
   setInterval(loadRolesData, POLL_INTERVALS.stats); 
+  setInterval(loadFraudData, POLL_INTERVALS.stats); 
   setInterval(loadDriversData, POLL_INTERVALS.drivers);
   setInterval(loadOrdersData, POLL_INTERVALS.orders);
   setInterval(() => {
