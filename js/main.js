@@ -15,6 +15,7 @@ import { initAnalytics } from "./ui/analytics.ui.js";
 import { loadWalletData } from "./ui/wallet.ui.js";
 import { loadCommissionData } from "./ui/commission.ui.js";
 import { loadPromosData } from "./ui/promos.ui.js";
+import { loadRolesData } from "./ui/roles.ui.js";
 import "./ui/notifications.ui.js";
 
 // ── Initialization ───────────────────────────────────────────────────────────
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadPricingData();
   loadPassengersData();
   loadPromosData();
+  loadRolesData();
 
   // Setup Intervals
   setInterval(updateDashboardStats, POLL_INTERVALS.stats);
@@ -42,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setInterval(loadWalletData, POLL_INTERVALS.stats); 
   setInterval(loadCommissionData, POLL_INTERVALS.stats); 
   setInterval(loadPromosData, POLL_INTERVALS.stats); 
+  setInterval(loadRolesData, POLL_INTERVALS.stats); 
   setInterval(loadDriversData, POLL_INTERVALS.drivers);
   setInterval(loadOrdersData, POLL_INTERVALS.orders);
   setInterval(() => {
