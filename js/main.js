@@ -5,20 +5,22 @@
  */
 
 import { POLL_INTERVALS } from "./config.js";
-import { initMap } from "./ui/map.ui.js";
+import { initAnalytics } from "./ui/analytics.ui.js";
+import { loadChatsData } from "./ui/chats.ui.js";
+import { loadCommissionData } from "./ui/commission.ui.js";
 import { updateDashboardStats } from "./ui/dashboard.ui.js";
+import { initDispatchUi } from "./ui/dispatch.ui.js";
 import { loadDriversData } from "./ui/drivers.ui.js";
+import { loadFraudData } from "./ui/fraud.ui.js";
+import "./ui/history.ui.js";
+import { initMap } from "./ui/map.ui.js";
+import "./ui/notifications.ui.js";
 import { loadOrdersData } from "./ui/orders.ui.js";
 import { loadPassengersData } from "./ui/passengers.ui.js";
 import { loadPricingData } from "./ui/pricing.ui.js";
-import { initAnalytics } from "./ui/analytics.ui.js";
-import { loadWalletData } from "./ui/wallet.ui.js";
-import { loadCommissionData } from "./ui/commission.ui.js";
 import { loadPromosData } from "./ui/promos.ui.js";
 import { loadRolesData } from "./ui/roles.ui.js";
-import { initDispatchUi } from "./ui/dispatch.ui.js";
-import { loadFraudData } from "./ui/fraud.ui.js";
-import "./ui/notifications.ui.js";
+import { loadWalletData } from "./ui/wallet.ui.js";
 
 // ── Initialization ───────────────────────────────────────────────────────────
 
@@ -27,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Initialize UI components
   initMap();
-  
+
   // Load initial data
   updateDashboardStats();
   initAnalytics();
@@ -44,12 +46,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Setup Intervals
   setInterval(updateDashboardStats, POLL_INTERVALS.stats);
-  setInterval(initAnalytics, POLL_INTERVALS.stats); 
-  setInterval(loadWalletData, POLL_INTERVALS.stats); 
-  setInterval(loadCommissionData, POLL_INTERVALS.stats); 
-  setInterval(loadPromosData, POLL_INTERVALS.stats); 
-  setInterval(loadRolesData, POLL_INTERVALS.stats); 
-  setInterval(loadFraudData, POLL_INTERVALS.stats); 
+  setInterval(initAnalytics, POLL_INTERVALS.stats);
+  setInterval(loadWalletData, POLL_INTERVALS.stats);
+  setInterval(loadCommissionData, POLL_INTERVALS.stats);
+  setInterval(loadPromosData, POLL_INTERVALS.stats);
+  setInterval(loadRolesData, POLL_INTERVALS.stats);
+  setInterval(loadFraudData, POLL_INTERVALS.stats);
+  setInterval(loadChatsData, POLL_INTERVALS.orders);
   setInterval(loadDriversData, POLL_INTERVALS.drivers);
   setInterval(loadOrdersData, POLL_INTERVALS.orders);
   setInterval(() => {
@@ -92,6 +95,6 @@ window.showToast = (message, type = "success") => {
 
 // ── Event Listeners ─────────────────────────────────────────────────────────
 
-window.addEventListener('app:reload-drivers', () => {
+window.addEventListener("app:reload-drivers", () => {
   loadDriversData();
 });
