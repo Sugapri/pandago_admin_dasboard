@@ -4,8 +4,8 @@
  */
 
 import {
-    fetchCommissionQueueFromApi,
-    verifyCommissionPaymentApi,
+  fetchCommissionQueueFromApi,
+  verifyCommissionPaymentApi,
 } from "../api/commission.api.js";
 import { numberFormat } from "../utils/format.js";
 
@@ -14,20 +14,7 @@ let _currentBillId = null; // Track which bill is open in modal
 // ── Main Loader ──────────────────────────────────────────────────────────────
 
 export async function loadCommissionData() {
-  try {
-    const result = await fetchCommissionQueueFromApi();
-    renderDriverSummaryCards(result.data);
-    renderCommissionQueue(result.data);
-    updateCommissionStats(result.total_unpaid);
-    updateSidebarBadge(result.data);
-  } catch (e) {
-    console.error("Commission Load Error:", e);
-    const tbody = document.getElementById("commission-queue-table");
-    if (tbody) {
-      tbody.innerHTML = `<tr><td colspan="5" class="px-8 py-10 text-center text-rose-400 font-bold italic uppercase text-xs">
-        <i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat data. Periksa koneksi server.</td></tr>`;
-    }
-  }
+  await _fetchAndCache();
 }
 
 // ── Sidebar Badge ────────────────────────────────────────────────────────────
@@ -186,10 +173,6 @@ function updateCommissionStats(totalUnpaid) {
 // ── Commission Detail Modal ──────────────────────────────────────────────────
 
 let _billsCache = [];
-
-// Keep a local cache so we can open modals by ID
-const _origFetch = loadCommissionData;
-export { loadCommissionData };
 
 async function _fetchAndCache() {
   try {
@@ -351,10 +334,3 @@ window.commissionModalAction = async (action) => {
     }
   }
 };
-
-// Patch loadCommissionData to also populate _billsCache
-const _origExport = loadCommissionData;
-// Re-export with cache population
-export async function _loadCommissionWithCache() {
-  await _fetchAndCache();
-}
