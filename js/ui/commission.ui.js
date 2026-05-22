@@ -312,21 +312,34 @@ window.commissionModalAction = async (action) => {
 
   try {
     const result = await verifyCommissionPaymentApi(_currentBillId, action);
-    if (result.success) {
-      window.showToast?.(result.message, "success");
-      window.closeCommissionDetailModal();
+
+    // Backend kadang mengirim struktur berbeda; anggap success jika ada flag
+    if (result?.success) {
+      window.showToast?.(result.message || "Verifikasi berhasil", "success");
+      window.closeCommissionDetailModal?.();
+
       // Refetch everything
       await _fetchAndCache();
       window.dispatchEvent(new CustomEvent("app:reload-stats"));
       window.dispatchEvent(new CustomEvent("app:reload-drivers"));
+      return;
     }
-  } catch (e) {
+
+    // Jika backend tidak pakai field success, tampilkan message/error
     window.showToast?.(
-      e.message || "Terjadi kesalahan saat proses verifikasi",
+      result?.message || result?.error || "Verifikasi gagal",
       "error",
     );
+  } catch (e) {
+    window.showToast?.(
+      e?.message || "Terjadi kesalahan saat proses verifikasi",
+      "error",
+    );
+  } finally {
+    // Restore tombol saat gagal (atau biar user bisa coba lagi)
     if (approveBtn) {
       approveBtn.disabled = false;
+      // jika sebelumnya sedang proses, kembalikan text normal
       approveBtn.innerHTML = `<i class="fas fa-check-circle"></i> Konfirmasi Pembayaran ✅`;
     }
     if (rejectBtn) {
