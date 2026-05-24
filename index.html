@@ -465,7 +465,8 @@
               class="lg:col-span-2 bg-white rounded-xl custom-shadow overflow-hidden border border-slate-100"
             >
               <div
-                class="p-8 border-b bg-amber-50/30 flex justify-between items-center"
+                class="p-8 border-b bg-amber-50/30 flex justify-between items-center cursor-pointer select-none"
+                onclick="toggleCommissionTable()"
               >
                 <div>
                   <h3
@@ -477,12 +478,19 @@
                     Driver menyetor hutang komisi melalui transfer
                   </p>
                 </div>
-                <span
-                  class="bg-amber-100 text-amber-700 text-[10px] font-black px-4 py-2 rounded-xl uppercase"
-                  >Menunggu</span
-                >
+                <div class="flex items-center gap-3">
+                  <span
+                    class="bg-amber-100 text-amber-700 text-[10px] font-black px-4 py-2 rounded-xl uppercase"
+                    >Menunggu</span
+                  >
+                  <button class="flex items-center gap-2 bg-amber-600 text-white text-xs font-black px-4 py-2 rounded-xl hover:bg-amber-700 transition active:scale-95">
+                    <span id="commission-toggle-label">Tampilkan</span>
+                    <i id="commission-toggle-icon" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                  </button>
+                </div>
               </div>
 
+              <div id="commission-table-wrapper" class="hidden overflow-hidden transition-all duration-300">
               <!-- ── Driver Pending Summary Cards ──────────── -->
               <div class="p-4 bg-rose-50/40 border-b border-rose-100">
                 <p class="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -521,6 +529,7 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
               </div>
             </div>
 
@@ -1017,6 +1026,7 @@
                     <th class="px-8 py-4">Detail</th>
                     <th class="px-8 py-4">Total Biaya</th>
                     <th class="px-8 py-4">Status</th>
+                    <th class="px-8 py-4 text-center">Aksi Admin</th>
                   </tr>
                 </thead>
                 <tbody
@@ -1632,12 +1642,13 @@
                           <th class="px-8 py-4">Penumpang & Driver</th>
                           <th class="px-8 py-4">Rute</th>
                           <th class="px-8 py-4">Total</th>
+                          <th class="px-8 py-4 text-center">Aksi Admin</th>
                           <th class="px-8 py-4 text-center">Detail</th>
                         </tr>
                       </thead>
                       <tbody id="history-table-body" class="divide-y divide-slate-50">
                         <tr>
-                          <td colspan="6" class="px-8 py-10 text-center text-slate-400 font-bold italic">Klik Buka History untuk memuat data perjalanan...</td>
+                          <td colspan="7" class="px-8 py-10 text-center text-slate-400 font-bold italic">Klik Buka History untuk memuat data perjalanan...</td>
                         </tr>
                       </tbody>
                     </table>
