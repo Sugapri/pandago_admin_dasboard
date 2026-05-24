@@ -100,7 +100,7 @@ function renderRevenueChart(revenueData) {
 
       return { day: `Day ${i + 1}`, amount: 0 };
     })
-    .slice(0, 7); // weekly chart: keep it to last 7 items if backend sends more
+    .slice(-7); // Ambil 7 data terbaru (tren terakhir) untuk grafik mingguan
 
   const labels = normalized.map((d) => d.day);
   const amounts = normalized.map((d) => d.amount);
@@ -113,12 +113,13 @@ function renderRevenueChart(revenueData) {
         {
           label: "Revenue (Rp)",
           data: amounts,
-          borderColor: "#10b981",
-          backgroundColor: "rgba(16, 185, 129, 0.1)",
+          borderColor: "#10b981", // Emerald 500
+          backgroundColor: "rgba(16, 185, 129, 0.1)", // Light glow effect
           fill: true,
           tension: 0.4,
           borderWidth: 3,
           pointBackgroundColor: "#10b981",
+          pointBorderColor: "#fff",
           pointRadius: 4,
         },
       ],
@@ -136,17 +137,19 @@ function renderRevenueChart(revenueData) {
           displayColors: false,
           callbacks: {
             label: (context) =>
-              `Rp ${new Intl.NumberFormat("id-ID").format(context.raw ?? 0)}`,
+              ` Total: Rp ${new Intl.NumberFormat("id-ID").format(context.raw ?? 0)}`,
           },
         },
       },
       scales: {
         y: {
           beginAtZero: true,
-          grid: { color: "rgba(0,0,0,0.05)" },
+          grid: { color: "rgba(0,0,0,0.03)", drawBorder: false },
           ticks: {
-            font: { size: 10, weight: "bold" },
-            callback: (value) => `Rp ${Math.round((value / 1000) * 10) / 10}k`,
+            font: { size: 10, weight: "600", family: "'Plus Jakarta Sans'" },
+            color: "#94a3b8",
+            callback: (value) =>
+              value >= 1000 ? `Rp ${value / 1000}k` : `Rp ${value}`,
           },
         },
         x: {
