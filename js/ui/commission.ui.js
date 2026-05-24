@@ -386,12 +386,22 @@ window.closeCommissionDetailModal = () => {
 window.commissionModalAction = async (action) => {
   if (!_currentBillId) return;
   const bill = _billsCache.find((b) => b.id === _currentBillId);
-  const confirmMsg =
-    action === "approve"
-      ? `✅ Konfirmasi pembayaran Rp ${numberFormat(bill?.amount_remaining || 0)} dari ${bill?.driver_name}?\n\nUang sudah masuk ke rekening Anda?`
-      : `❌ Tolak bukti transfer dari ${bill?.driver_name}?\nDriver akan diminta upload ulang.`;
 
-  if (!confirm(confirmMsg)) return;
+  let reason = "";
+  if (action === "approve") {
+    if (
+      !confirm(
+        `✅ Konfirmasi pembayaran Rp ${numberFormat(bill?.amount_remaining || 0)} dari ${bill?.driver_name}?\n\nUang sudah masuk ke rekening Anda?`,
+      )
+    )
+      return;
+  } else {
+    reason = prompt(
+      `❌ Tolak bukti transfer dari ${bill?.driver_name}?\n\nBerikan alasan agar driver tahu apa yang harus diperbaiki:`,
+      "Bukti transfer tidak jelas",
+    );
+    if (reason === null) return;
+  }
 
   // Disable buttons during processing
   const approveBtn = document.getElementById("cdm-approve-btn");
@@ -405,7 +415,11 @@ window.commissionModalAction = async (action) => {
   }
 
   try {
-    const result = await verifyCommissionPaymentApi(_currentBillId, action);
+    const result = await verifyCommissionPaymentApi(
+      _currentBillId,
+      action,
+      reason,
+    );
 
     // Backend kadang mengirim struktur berbeda; anggap success jika ada flag
     if (result?.success) {
@@ -449,15 +463,25 @@ async function directCommissionAction(billId, action) {
   const bill = _billsCache.find((b) => b.id === billId);
   if (!bill) return;
 
-  const confirmMsg =
-    action === "approve"
-      ? `✅ Konfirmasi pembayaran Rp ${numberFormat(bill.amount_remaining)} dari ${bill.driver_name}?\n\nPastikan uang sudah masuk ke rekening!`
-      : `❌ Tolak bukti transfer dari ${bill.driver_name}?\nDriver akan diminta untuk upload ulang bukti yang valid.`;
-
-  if (!confirm(confirmMsg)) return;
+  let reason = "";
+  if (action === "approve") {
+    if (
+      !confirm(
+        `✅ Konfirmasi pembayaran Rp ${numberFormat(bill.amount_remaining)} dari ${bill.driver_name}?\n\nPastikan uang sudah masuk ke rekening!`,
+      )
+    )
+      return;
+  } else {
+    reason = prompt(
+      `❌ Tolak bukti transfer dari ${bill.driver_name}?\n\nBerikan alasan penolakan agar driver tahu apa yang harus diperbaiki:`,
+      "Bukti transfer tidak jelas / blur",
+    );
+    if (reason === null) return; // User click cancel
+  }
 
   try {
-    const result = await verifyCommissionPaymentApi(billId, action);
+    // Mengirim action dan reason ke API
+    const result = await verifyCommissionPaymentApi(billId, action, reason);
 
     if (result?.success) {
       window.showToast?.(result.message || "Verifikasi berhasil", "success");

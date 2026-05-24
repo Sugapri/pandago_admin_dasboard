@@ -13,11 +13,11 @@ export async function fetchCommissionQueueFromApi() {
   return await response.json();
 }
 
-export async function verifyCommissionPaymentApi(id, action) {
+export async function verifyCommissionPaymentApi(id, action, reason = "") {
   const response = await fetch(`${API_BASE_URL}/commission/verify`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ id, action }),
+    body: JSON.stringify({ id, action, reason }),
   });
 
   // Lebih aman: coba parse JSON walaupun status error

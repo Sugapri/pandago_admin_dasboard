@@ -1,26 +1,34 @@
 /**
  * api/fraud.api.js
- * HTTP calls for Security & Fraud Detection.
+ * API calls for Security & Fraud Detection.
  */
 
 import { API_BASE_URL, getHeaders } from "../config.js";
 
+/**
+ * Mengambil daftar peringatan fraud yang aktif.
+ * @returns {Promise<Array>}
+ */
 export async function fetchFraudAlertsApi() {
-  const res = await fetch(`${API_BASE_URL}/fraud/alerts`, {
-    headers: getHeaders()
+  const response = await fetch(`${API_BASE_URL}/fraud/alerts`, {
+    headers: getHeaders(),
   });
-  const json = await res.json();
-  if (!json.success) throw new Error("Failed to fetch fraud alerts");
-  return json.data;
+  if (!response.ok) throw new Error("Gagal mengambil data fraud");
+  const result = await response.json();
+  return result.data;
 }
 
+/**
+ * Menyelesaikan atau menindaklanjuti laporan fraud.
+ * @param {number} id
+ * @param {string} action - 'ignore' atau 'sanction'
+ */
 export async function resolveFraudAlertApi(id, action) {
-  const res = await fetch(`${API_BASE_URL}/fraud/alerts/${id}/resolve`, {
+  const response = await fetch(`${API_BASE_URL}/fraud/resolve`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ action }),
+    body: JSON.stringify({ id, action }),
   });
-  const json = await res.json();
-  if (!json.success) throw new Error(json.message || "Gagal memproses alert fraud");
-  return json;
+  if (!response.ok) throw new Error("Gagal memproses tindakan fraud");
+  return await response.json();
 }
