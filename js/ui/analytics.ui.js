@@ -14,17 +14,74 @@ let distributionChart = null;
  * Load and render all charts.
  */
 export async function initAnalytics() {
+  const revLoader = document.getElementById("revenue-loader");
+  const srvLoader = document.getElementById("service-loader");
+
+  // Tampilkan loader sebelum fetch
+  revLoader?.classList.remove("hidden");
+  srvLoader?.classList.remove("hidden");
+
   try {
     const data = await fetchAnalyticsFromApi();
-    renderRevenueChart(data.revenue_weekly);
-    renderServiceChart(data.service_popularity);
+    console.log("Fetched analytics data:", data);
+
+    if (!data) throw new Error("Data kosong dari server");
+
+    // Render Revenue (Utama)
+    if (data.revenue_weekly) renderRevenueChart(data.revenue_weekly);
+
+    // Render Service Popularity
+    if (data.service_popularity) renderServiceChart(data.service_popularity);
 
     // Big Data Charts (New)
     renderGrowthChart(data.growth_metrics || simulationGrowthData());
-    renderDistributionChart(data.service_popularity);
+
+    // Render Distribution (Bar Chart) menggunakan data popularity yang sama
+    if (data.service_popularity)
+      renderDistributionChart(data.service_popularity);
   } catch (e) {
     console.error("Analytics Initialization Error:", e);
+
+    // Hapus chart yang ada jika terjadi error saat reload
+    if (revenueChart) {
+      revenueChart.destroy();
+      revenueChart = null;
+    }
+    if (serviceChart) {
+      serviceChart.destroy();
+      serviceChart = null;
+    }
+
+    // Deteksi jika server lokal mati (Failed to fetch)
+    const isConnectionError =
+      e.message.includes("Failed to fetch") ||
+      e.message.includes("NetworkError");
+    const displayMsg = isConnectionError ? "Koneksi Lokal Gagal" : e.message;
+
+    handleChartError("revenueChart", displayMsg);
+    handleChartError("serviceChart", "Gagal Koneksi");
+  } finally {
+    // Sembunyikan loader setelah selesai (berhasil atau gagal)
+    revLoader?.classList.add("hidden");
+    srvLoader?.classList.add("hidden");
   }
+}
+
+/**
+ * Helper untuk menampilkan pesan error di dalam canvas
+ */
+function handleChartError(canvasId, message) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#ef4444"; // rose-500
+  ctx.font = "bold 12px 'Plus Jakarta Sans'";
+  ctx.textAlign = "center";
+  ctx.fillText(message, w / 2, h / 2);
 }
 
 /**
@@ -33,6 +90,7 @@ export async function initAnalytics() {
 function renderRevenueChart(revenueData) {
   const canvas = document.getElementById("revenueChart");
   if (!canvas) return;
+  console.log("Revenue Chart Canvas:", canvas); // Debug: Pastikan elemen canvas ditemukan
 
   const ctx = canvas.getContext("2d");
 
@@ -104,6 +162,8 @@ function renderRevenueChart(revenueData) {
 
   const labels = normalized.map((d) => d.day);
   const amounts = normalized.map((d) => d.amount);
+  console.log("Revenue Chart Labels:", labels); // Debug: Lihat label data
+  console.log("Revenue Chart Amounts:", amounts); // Debug: Lihat nilai data
 
   revenueChart = new Chart(ctx, {
     type: "line",
@@ -165,12 +225,16 @@ function renderRevenueChart(revenueData) {
  * Render the Service Popularity pie chart.
  */
 function renderServiceChart(serviceData) {
-  const ctx = document.getElementById("serviceChart").getContext("2d");
+  const canvas = document.getElementById("serviceChart");
+  if (!canvas || !serviceData) return;
+
+  console.log("Service Chart Canvas:", canvas); // Debug: Pastikan elemen canvas ditemukan
+  const ctx = canvas.getContext("2d");
 
   if (serviceChart) serviceChart.destroy();
 
   const labels = serviceData.map((s) => s.service_type || "Unknown");
-  const counts = serviceData.map((s) => s.total);
+  const counts = serviceData.map((s) => s.total || 0);
 
   serviceChart = new Chart(ctx, {
     type: "doughnut",
@@ -224,7 +288,9 @@ function renderServiceChart(serviceData) {
  */
 function renderGrowthChart(growthData) {
   const canvas = document.getElementById("growthChart");
-  if (!canvas) return;
+  if (!canvas || !growthData) return;
+
+  console.log("Growth Chart Canvas:", canvas); // Debug: Pastikan elemen canvas ditemukan
   const ctx = canvas.getContext("2d");
 
   if (growthChart) growthChart.destroy();
@@ -279,7 +345,9 @@ function renderGrowthChart(growthData) {
  */
 function renderDistributionChart(data) {
   const canvas = document.getElementById("distributionChart");
-  if (!canvas) return;
+  if (!canvas || !data) return;
+
+  console.log("Distribution Chart Canvas:", canvas); // Debug: Pastikan elemen canvas ditemukan
   const ctx = canvas.getContext("2d");
 
   if (distributionChart) distributionChart.destroy();
@@ -287,11 +355,11 @@ function renderDistributionChart(data) {
   distributionChart = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: data.map((s) => s.service_type),
+      labels: data.map((s) => s.service_type || "Unknown"),
       datasets: [
         {
           label: "Orders",
-          data: data.map((s) => s.total),
+          data: data.map((s) => s.total || 0),
           backgroundColor: [
             "#10b981",
             "#3b82f6",

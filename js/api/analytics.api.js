@@ -10,14 +10,19 @@ import { API_BASE_URL, getHeaders } from "../config.js";
  * @returns {Promise<Object>}
  */
 export async function fetchAnalyticsFromApi() {
-  const response = await fetch(`${API_BASE_URL}/analytics`, {
-    headers: getHeaders()
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/analytics`, {
+      headers: getHeaders(),
+    });
 
-  if (!response.ok) {
-    throw new Error("Gagal mengambil data analitik");
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    // Melempar error agar ditangkap oleh UI loader
+    throw error;
   }
-
-  const result = await response.json();
-  return result.data;
 }
