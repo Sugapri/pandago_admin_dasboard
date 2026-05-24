@@ -69,7 +69,19 @@ function renderHistoryTable(orders) {
         <td class="px-8 py-6">
           <span class="text-xs font-black text-slate-800 italic">Rp ${order.display_price.toLocaleString()}</span>
         </td>
-        <td class="px-8 py-6 text-center">
+        <td class="px-8 py-6 text-center"> 
+          ${
+            order.driver_id && order.driver_name
+              ? `
+            <button onclick="window.openSanctionModal(${order.driver_id}, '${order.driver_name.replace(/'/g, "\\'")}')"
+              class="bg-rose-500/20 text-rose-600 p-2.5 rounded-xl shadow-md hover:bg-rose-500 hover:text-white transition active:scale-90"
+              title="Sanksi Driver">
+              <i class="fas fa-gavel text-sm"></i>
+            </button>`
+              : ""
+          }
+        </td>
+        <td class="px-8 py-6 text-center"> 
           <button onclick="window.viewOrderDetail(${order.id})" class="bg-indigo-500 hover:bg-slate-800 text-white p-2.5 rounded-xl shadow-lg active:scale-90 transition">
             <i class="fas fa-file-invoice text-sm"></i>
           </button>

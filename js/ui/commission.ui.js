@@ -133,13 +133,46 @@ function renderCommissionQueue(bills) {
         : `<div class="w-14 h-14 bg-slate-50 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200 text-[8px] font-black text-slate-300 uppercase gap-1">
            <i class="fas fa-upload"></i><span>Kosong</span></div>`;
 
-      const canVerify = b.status === "pending_verification" && b.proof_url;
-      const actionBtns = canVerify
-        ? `<button onclick="window.openCommissionDetailModal(${b.id})"
-           class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-[10px] font-black transition active:scale-90 shadow flex items-center gap-1">
-           <i class="fas fa-eye"></i> Review
-         </button>`
-        : `<div class="text-center text-slate-300 text-[9px] font-bold italic uppercase">Menunggu<br/>bukti driver</div>`;
+      const hasProof = !!b.proof_url;
+      const isPending = b.status === "pending_verification";
+      const isUnpaid = b.status === "unpaid";
+
+      const actionBtns = ` 
+        <div class="flex items-center justify-center gap-2">
+          <button onclick="window.openCommissionDetailModal(${b.id})"
+            class="p-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-md transition active:scale-90"
+            title="Review Detail">
+            <i class="fas fa-eye text-xs"></i>
+          </button>
+          <button onclick="window.sendCommissionWarning(${b.id})"
+            class="p-2 ${isUnpaid ? "bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" : "bg-slate-50 text-slate-300 opacity-50 cursor-not-allowed"} rounded-lg shadow-sm transition active:scale-90"
+            title="Kirim Peringatan"
+            ${!isUnpaid ? "disabled" : ""}>
+            <i class="fas fa-bell text-xs"></i>
+          </button>
+          ${
+            b.driver_id
+              ? `
+            <button onclick="window.openSanctionModal(${b.driver_id}, '${b.driver_name.replace(/'/g, "\\'")}')"
+              class="p-2 bg-rose-500/20 text-rose-600 rounded-lg shadow-md hover:bg-rose-500 hover:text-white transition active:scale-90"
+              title="Sanksi Driver">
+              <i class="fas fa-gavel text-xs"></i>
+            </button>`
+              : ""
+          }
+          <button onclick="window.directCommissionAction(${b.id}, 'approve')"
+            class="p-2 ${isPending && hasProof ? "bg-emerald-500 hover:bg-emerald-600 shadow-md" : "bg-slate-100 text-slate-300 opacity-50 cursor-not-allowed"} text-white rounded-lg transition active:scale-90"
+            title="Setujui Pembayaran"
+            ${!(isPending && hasProof) ? "disabled" : ""}>
+            <i class="fas fa-check text-xs"></i>
+          </button>
+          <button onclick="window.directCommissionAction(${b.id}, 'reject')"
+            class="p-2 ${isPending && hasProof ? "bg-rose-500 hover:bg-rose-600 shadow-md" : "bg-slate-100 text-slate-300 opacity-50 cursor-not-allowed"} text-white rounded-lg transition active:scale-90"
+            title="Tolak Bukti"
+            ${!(isPending && hasProof) ? "disabled" : ""}>
+            <i class="fas fa-times text-xs"></i>
+          </button>
+        </div>`;
 
       const rowBg =
         b.status === "pending_verification"
@@ -190,6 +223,9 @@ async function _fetchAndCache() {
 // Override the exported function to also populate cache
 Object.assign(window, {
   _commissionLoadFull: _fetchAndCache,
+  directCommissionAction: directCommissionAction,
+  sendCommissionWarning: sendCommissionWarning,
+  toggleCommissionTable: toggleCommissionTable,
 });
 
 window.openCommissionDetailModal = (billId) => {
@@ -275,10 +311,68 @@ function _populateModal(bill) {
 
   // Action buttons: only show if pending_verification with proof
   const actionBtns = document.getElementById("cdm-action-buttons");
-  if (bill.status === "pending_verification" && bill.proof_url) {
-    actionBtns.classList.remove("hidden");
+  const isPending = bill.status === "pending_verification" && bill.proof_url;
+
+  actionBtns?.classList.remove("hidden");
+  const approveBtn = document.getElementById("cdm-approve-btn");
+  const rejectBtn = document.getElementById("cdm-reject-btn");
+  if (approveBtn) {
+    approveBtn.disabled = !isPending;
+    approveBtn.className = isPending
+      ? "flex items-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black transition active:scale-95 shadow-lg"
+      : "flex items-center gap-2 px-5 py-3 bg-slate-200 text-slate-400 rounded-xl text-xs font-black cursor-not-allowed";
+  }
+  if (rejectBtn) rejectBtn.disabled = !isPending;
+}
+
+/**
+ * Toggle the visibility of the commission queue table and summary cards.
+ */
+export function toggleCommissionTable() {
+  const wrapper = document.getElementById("commission-table-wrapper");
+  const label = document.getElementById("commission-toggle-label");
+  const icon = document.getElementById("commission-toggle-icon");
+  const isHidden = wrapper.classList.contains("hidden");
+
+  if (isHidden) {
+    wrapper.classList.remove("hidden");
+    if (label) label.textContent = "Sembunyikan";
+    if (icon) icon.style.transform = "rotate(180deg)";
   } else {
-    actionBtns.classList.add("hidden");
+    wrapper.classList.add("hidden");
+    if (label) label.textContent = "Tampilkan";
+    if (icon) icon.style.transform = "rotate(0deg)";
+  }
+}
+
+/**
+ * Kirim peringatan ke driver jika belum membayar atau menindaklanjuti catatan
+ */
+async function sendCommissionWarning(billId) {
+  const bill = _billsCache.find((b) => b.id === billId);
+  if (!bill) return;
+
+  if (bill.status !== "unpaid") {
+    window.showToast?.(
+      "Hanya tagihan 'Belum Bayar' yang memerlukan peringatan.",
+      "error",
+    );
+    return;
+  }
+
+  if (
+    !confirm(`Kirim peringatan penagihan komisi ke driver ${bill.driver_name}?`)
+  )
+    return;
+
+  try {
+    // Simulasi pengiriman notifikasi/peringatan (Integrasi API di sini)
+    window.showToast?.(
+      `Peringatan berhasil dikirim ke ${bill.driver_name}`,
+      "success",
+    );
+  } catch (e) {
+    window.showToast?.("Gagal mengirim peringatan", "error");
   }
 }
 
@@ -347,3 +441,33 @@ window.commissionModalAction = async (action) => {
     }
   }
 };
+
+/**
+ * Aksi langsung dari baris tabel (Approve/Reject)
+ */
+async function directCommissionAction(billId, action) {
+  const bill = _billsCache.find((b) => b.id === billId);
+  if (!bill) return;
+
+  const confirmMsg =
+    action === "approve"
+      ? `✅ Konfirmasi pembayaran Rp ${numberFormat(bill.amount_remaining)} dari ${bill.driver_name}?\n\nPastikan uang sudah masuk ke rekening!`
+      : `❌ Tolak bukti transfer dari ${bill.driver_name}?\nDriver akan diminta untuk upload ulang bukti yang valid.`;
+
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    const result = await verifyCommissionPaymentApi(billId, action);
+
+    if (result?.success) {
+      window.showToast?.(result.message || "Verifikasi berhasil", "success");
+      await _fetchAndCache();
+      window.dispatchEvent(new CustomEvent("app:reload-stats"));
+      window.dispatchEvent(new CustomEvent("app:reload-drivers"));
+    } else {
+      window.showToast?.(result?.message || "Verifikasi gagal", "error");
+    }
+  } catch (e) {
+    window.showToast?.(e.message || "Gagal memproses verifikasi", "error");
+  }
+}
