@@ -7,7 +7,7 @@ import { API_BASE_URL, getHeaders } from "../config.js";
 
 export async function fetchWalletQueueFromApi() {
   const response = await fetch(`${API_BASE_URL}/wallet-queue`, {
-    headers: getHeaders()
+    headers: getHeaders(),
   });
   if (!response.ok) throw new Error("Gagal mengambil antrian keuangan");
   const result = await response.json();
@@ -16,20 +16,24 @@ export async function fetchWalletQueueFromApi() {
 
 export async function verifyWalletTransactionApi(id, action) {
   const response = await fetch(`${API_BASE_URL}/wallet/verify`, {
-    method: 'POST',
+    method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ id, action })
+    body: JSON.stringify({ id, action }),
   });
-  if (!response.ok) throw new Error("Gagal memproses transaksi");
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok || !result.success)
+    throw new Error(result.message || "Gagal memproses transaksi");
+  return result;
 }
 
 export async function manualTopupApi(driverId, amount) {
   const response = await fetch(`${API_BASE_URL}/wallet/manual`, {
-    method: 'POST',
+    method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ driver_id: driverId, amount: amount })
+    body: JSON.stringify({ driver_id: driverId, amount: amount }),
   });
-  if (!response.ok) throw new Error("Gagal melakukan top-up manual");
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok || !result.success)
+    throw new Error(result.message || "Gagal melakukan top-up manual");
+  return result;
 }

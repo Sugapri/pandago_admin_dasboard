@@ -6,8 +6,6 @@
 // export const API_BASE_URL = "http://localhost:8000/api/admin";
 export const API_BASE_URL =
   "https://driver-api-production-ce53.up.railway.app/api/admin";
-export const baseUrl =
-  "https://driver-api-production-ce53.up.railway.app/api/admin";
 
 /**
  * Global headers for API requests.

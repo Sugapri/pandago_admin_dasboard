@@ -314,16 +314,23 @@
                     Tren pendapatan komisi 7 hari terakhir
                   </p>
                 </div>
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-                  <i class="fas fa-chart-line"></i>
+                <div class="flex items-center gap-3">
+                  <select class="bg-slate-50 border border-slate-200 text-[10px] font-black px-3 py-2 rounded-xl outline-none cursor-pointer hover:bg-slate-100 transition">
+                    <option>7 Hari Terakhir</option>
+                    <option>30 Hari Terakhir</option>
+                    <option>Bulan Ini</option>
+                  </select>
+                  <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
                 </div>
               </div>
-            <div class="h-[300px] w-full relative">
-              <!-- Revenue Loader Overlay -->
-              <div id="revenue-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px] z-10 hidden">
-                <i class="fas fa-circle-notch fa-spin text-emerald-500 text-3xl mb-2"></i>
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Memuat Data...</span>
-              </div>
+              <div class="h-[300px] w-full relative">
+                <!-- Revenue Loader Overlay -->
+                <div id="revenue-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px] z-10 hidden">
+                  <i class="fas fa-circle-notch fa-spin text-emerald-500 text-3xl mb-2"></i>
+                  <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Memuat Data...</span>
+                </div>
                 <canvas id="revenueChart"></canvas>
               </div>
             </div>
@@ -340,11 +347,11 @@
                 <p class="text-xs text-slate-400 font-bold mb-8">
                   Distribusi penggunaan layanan
                 </p>
-            <div class="h-[250px] w-full flex items-center justify-center relative">
-              <!-- Service Loader Overlay -->
-              <div id="service-loader" class="absolute inset-0 flex items-center justify-center bg-slate-900/40 backdrop-blur-[1px] z-10 hidden">
-                <i class="fas fa-circle-notch fa-spin text-emerald-500 text-3xl"></i>
-              </div>
+                <div class="h-[250px] w-full flex items-center justify-center relative">
+                  <!-- Service Loader Overlay -->
+                  <div id="service-loader" class="absolute inset-0 flex items-center justify-center bg-slate-900/40 backdrop-blur-[1px] z-10 hidden">
+                    <i class="fas fa-circle-notch fa-spin text-emerald-500 text-3xl"></i>
+                  </div>
                   <canvas id="serviceChart"></canvas>
                 </div>
               </div>
